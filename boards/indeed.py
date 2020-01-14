@@ -13,20 +13,20 @@ class IndeedJobs:
         if page is None:
             sys.exit('indeed, there was an error downloading indeed jobs webpage. cannot continue further, so fix this first')
         
-        indeed_jobs = self.__parse_indeed_index(page)
+        indeed_jobs = self.__parse_index(page)
 
         for job in indeed_jobs:
             job_content = helpers.download_page(job["href"])
             if job_content is None:
                 continue
 
-            parsed_details = self.__parse_indeed_details(job_content)
+            parsed_details = self.__parse_details(job_content)
             job["description_text"] = parsed_details[0]
             job["description"] = parsed_details[1]
         
         return indeed_jobs
 
-    def __parse_indeed_index(self, htmlcontent):
+    def __parse_index(self, htmlcontent):
         soup = BeautifulSoup(htmlcontent, 'lxml')
         jobs_container = soup.find(id='resultsCol')
         job_items = jobs_container.find_all('div', class_='jobsearch-SerpJobCard')
@@ -59,7 +59,7 @@ class IndeedJobs:
         
         return all_jobs
 
-    def __parse_indeed_details(self, htmlcontent):
+    def __parse_details(self, htmlcontent):
         soup = BeautifulSoup(htmlcontent, 'lxml')
         description_element = soup.find(id='jobDescriptionText')
         description_text = description_element.text.strip()
