@@ -1,14 +1,15 @@
 from bs4 import BeautifulSoup
 import sys
 
-from boards import helpers
+from boards.helpers import HttpHelpers
 
 class IndeedJobs:
     def __init__(self, url):
         self.url = url
+        self.helpers = HttpHelpers()
 
     def get(self):
-        page = helpers.download_page(self.url)
+        page = self.helpers.download_page(self.url)
 
         if page is None:
             sys.exit('indeed, there was an error downloading indeed jobs webpage. cannot continue further, so fix this first')
@@ -16,7 +17,7 @@ class IndeedJobs:
         indeed_jobs = self.__parse_index(page)
 
         for job in indeed_jobs:
-            job_content = helpers.download_page(job["href"])
+            job_content = self.helpers.download_page(job["href"])
             if job_content is None:
                 continue
 
